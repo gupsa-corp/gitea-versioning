@@ -1,51 +1,23 @@
-version: "3.8"
-
 networks:
   gitea:
     external: false
 
 services:
-  gitea-db:
-    image: postgres:15-alpine
-    container_name: gitea-db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=gitea
-      - POSTGRES_PASSWORD=gitea
-      - POSTGRES_DB=gitea
-    networks:
-      - gitea
-    volumes:
-      - gitea-db-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gitea -d gitea"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   gitea:
     image: gitea/gitea:1.21.5
     container_name: gitea
     restart: unless-stopped
-    depends_on:
-      gitea-db:
-        condition: service_healthy
     environment:
       - USER_UID=1000
       - USER_GID=1000
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=gitea-db:5432
-      - GITEA__database__NAME=gitea
-      - GITEA__database__USER=gitea
-      - GITEA__database__PASSWD=gitea
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__database__PATH=/data/gitea/gitea.db
       - GITEA__server__DOMAIN=${GITEA_DOMAIN:-localhost}
       - GITEA__server__SSH_DOMAIN=${GITEA_DOMAIN:-localhost}
       - GITEA__server__ROOT_URL=http://${GITEA_DOMAIN:-localhost}:${GITEA_HTTP_PORT:-3000}/
       - GITEA__server__HTTP_PORT=3000
       - GITEA__server__SSH_PORT=22
-      - GITEA__security__INSTALL_LOCK=false
+      - GITEA__security__INSTALL_LOCK=${GITEA_INSTALL_LOCK:-false}
       - GITEA__service__DISABLE_REGISTRATION=${GITEA_DISABLE_REGISTRATION:-false}
       - GITEA__service__REQUIRE_SIGNIN_VIEW=${GITEA_REQUIRE_SIGNIN:-false}
       - GITEA__mailer__ENABLED=${GITEA_MAILER_ENABLED:-false}
@@ -56,7 +28,7 @@ services:
     networks:
       - gitea
     volumes:
-      - gitea-data:/data
+      - ./data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
@@ -86,8 +58,6 @@ services:
     profiles:
       - nginx
 
-volumes:
-  gitea-data:
-    driver: local
-  gitea-db-data:
-    driver: local
+# volumes:
+#   gitea-data:
+#     driver: local

@@ -14,30 +14,30 @@ setup: ## Initial setup - copy environment file and create directories
 
 up: ## Start all services
 	@echo "Starting Gitea services..."
-	@docker-compose up -d
-	@echo "Services started. Access Gitea at http://localhost:3000"
+	@docker compose up -d
+	@echo "Services started. Access Gitea at http://localhost:3555"
 
 up-with-nginx: ## Start all services including nginx reverse proxy
 	@echo "Starting Gitea services with nginx..."
-	@docker-compose --profile nginx up -d
+	@docker compose --profile nginx up -d
 	@echo "Services started with nginx reverse proxy."
 
 down: ## Stop all services
 	@echo "Stopping Gitea services..."
-	@docker-compose down
+	@docker compose down
 
 restart: ## Restart all services
 	@echo "Restarting Gitea services..."
-	@docker-compose restart
+	@docker compose restart
 
 logs: ## Show logs from all services
-	@docker-compose logs -f
+	@docker compose logs -f
 
 logs-gitea: ## Show logs from gitea service only
-	@docker-compose logs -f gitea
+	@docker compose logs -f gitea
 
 logs-db: ## Show logs from database service only
-	@docker-compose logs -f gitea-db
+	@docker compose logs -f gitea-db
 
 backup: ## Create backup of Gitea data
 	@echo "Creating backup..."
@@ -50,16 +50,16 @@ restore: ## Restore Gitea data from backup (Usage: make restore DATE=20240101_12
 clean: ## Clean up all data (WARNING: This will delete all data!)
 	@echo "WARNING: This will delete all Gitea data!"
 	@read -p "Are you sure? [y/N] " confirm && [ "$$confirm" = "y" ]
-	@docker-compose down -v
+	@docker compose down -v
 	@docker volume rm gitea-data gitea-db-data 2>/dev/null || true
 	@echo "All data cleaned."
 
 clean-images: ## Remove all Gitea related Docker images
-	@docker-compose down
+	@docker compose down
 	@docker rmi gitea/gitea postgres nginx 2>/dev/null || true
 
 status: ## Show status of all services
-	@docker-compose ps
+	@docker compose ps
 
 shell-gitea: ## Open shell in gitea container
 	@docker exec -it gitea sh
@@ -69,8 +69,8 @@ shell-db: ## Open psql shell in database container
 
 update: ## Update Gitea to latest version
 	@echo "Updating Gitea..."
-	@docker-compose pull
-	@docker-compose up -d
+	@docker compose pull
+	@docker compose up -d
 	@echo "Update complete."
 
 admin-user: ## Create admin user (Usage: make admin-user USER=admin EMAIL=admin@example.com PASS=password)
