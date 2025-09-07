@@ -1,0 +1,42 @@
+# Environment variables
+.env
+
+# Backup files
+backups/
+*.tar.gz
+*.zip
+
+# Logs
+logs/
+*.log
+
+# SSL certificates
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
+
+# Data directories (if mounted locally)
+data/
+postgres-data/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
